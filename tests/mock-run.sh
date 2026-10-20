@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC2016  # stub bodies expand later, inside each stub
 #
 # Runs MacDoctor on a non-Mac (Linux CI) with stubbed macOS commands, to catch
 # script errors.  Usage: tests/mock-run.sh [macdoctor options]
