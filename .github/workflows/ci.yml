@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint-and-mock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck
+        run: |
+          shellcheck -x macdoctor.sh MacDoctor.command setup-autorun.sh prepare-usb.sh tools/*.sh lib/*.sh modules/*.sh
+          shellcheck -s sh recovery/recovery-repair.sh
+      - name: mock run (dry-run)
+        run: tests/mock-run.sh --dry-run --quick
+      - name: mock run (offline, low disk)
+        run: MOCK_LOWDISK=1 MOCK_OFFLINE=1 tests/mock-run.sh --quick
+
+  macos-diagnose:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: diagnose only on a real Mac
+        run: sudo /bin/bash macdoctor.sh --diagnose --quick --report-dir "$RUNNER_TEMP/reports"
